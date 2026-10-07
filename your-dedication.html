@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Dedication Page - Sketchy Dedications</title>
+<link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/dedications.css">
+</head>
+<body>
+
+<header>
+  <h1>Sketchy Dedications</h1>
+  <nav>
+    <button type="button" data-open="postModal" aria-label="New dedication">＋</button>
+    <button type="button" data-info="intro">Introduction</button>
+    <button type="button" data-info="about">About</button>
+    <button type="button" data-info="features">Features</button>
+    <a href="profile.html">Profile</a>
+    <a href="saved-post.html">Saved Posts</a>
+  </nav>
+</header>
+
+<div class="search-wrap">
+  <input type="search" id="searchInput" placeholder="Search by username or description..." aria-label="Search dedications">
+  <button type="button" class="clear-search" id="clearSearch" aria-label="Clear search">×</button>
+</div>
+
+<main class="container" id="postContainer" aria-live="polite"></main>
+
+<!-- Info modal (content comes from the templates below) -->
+<div class="overlay" id="infoModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button type="button" class="close" data-close aria-label="Close">×</button>
+    <div id="infoBody"></div>
+  </div>
+</div>
+
+<!-- New post -->
+<div class="overlay" id="postModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="New dedication">
+    <button type="button" class="close" data-close aria-label="Close">×</button>
+    <h2>Post Dedication</h2>
+    <form id="postForm">
+      <label for="postImage">Image (max 2 MB):</label>
+      <input type="file" id="postImage" accept="image/*" required>
+      <label for="postSong">Song (optional, max 1.5 MB):</label>
+      <input type="file" id="postSong" accept="audio/*">
+      <label for="postDescription">Description:</label>
+      <textarea id="postDescription" rows="4" placeholder="What do you feel?" required></textarea>
+      <div class="actions">
+        <button type="button" class="submit" data-close>Cancel</button>
+        <button type="submit" class="submit">Post</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit post -->
+<div class="overlay" id="editModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Edit dedication">
+    <button type="button" class="close" data-close aria-label="Close">×</button>
+    <h2>Edit Dedication</h2>
+    <form id="editForm">
+      <label for="editDescription">Description:</label>
+      <textarea id="editDescription" rows="4" maxlength="500" required></textarea>
+      <div class="actions">
+        <button type="button" class="submit" data-close>Cancel</button>
+        <button type="submit" class="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Profile preview -->
+<div class="overlay" id="profileModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button type="button" class="close" data-close aria-label="Close">×</button>
+    <div id="profileContent"></div>
+  </div>
+</div>
+
+<!-- Info templates -->
+<template id="tpl-intro">
+  <h2>Introduction</h2>
+  <p class="modal-text">
+    Welcome to Sketchy Dedications – a creative sanctuary where words, pictures, and music come together to tell stories that matter.
+  </p>
+  <p class="modal-text">
+    In today’s fast-paced world, we all need a space where we can pause, reflect, and share a piece of ourselves. Sketchy Dedications is built for exactly that. It is a place where you can post a random thought that speaks to your current mood, share a picture that carries a memory too valuable to be forgotten, or pair a song with a description that reveals the emotions hidden between the lines.
+  </p>
+  <p class="modal-text">
+    This platform is for everyone. Whether you are an artist seeking to express creativity, a dreamer who wants to turn feelings into words, or simply someone looking for comfort in shared experiences, Sketchy Dedications gives you the freedom to dedicate moments of your life in your own unique way. Each post, no matter how simple or elaborate, becomes a dedication—something personal that may resonate with others in ways you may not expect.
+  </p>
+  <p class="modal-text">
+    At Sketchy Dedications, we believe that self-expression should be open, honest, and valued. Every dedication, whether lighthearted or deeply emotional, forms part of a bigger community of stories and voices. Here, randomness has meaning, creativity finds its place, and emotions are given the respect they deserve.
+  </p>
+  <p class="modal-text">
+    So whether you’re here to write, to share, or simply to explore, welcome to a space where every dedication becomes a part of something bigger—a collective sketch of life’s emotions.
+  </p>
+</template>
+
+<template id="tpl-about">
+  <h2>About <strong>Sketchy Dedications</strong></h2>
+  <p class="modal-text">
+    <strong>Sketchy Dedications</strong> was created by <strong>Rio A. Gatacilo III</strong>, born out of a simple yet powerful desire—to give emotions a space where they can be seen, heard, and remembered. This webpage reflects my personal journey of expression. For a long time, I often found myself searching for ways to let out what I truly felt inside—things that words alone could not fully capture. Pictures, when combined with songs and meaningful descriptions, became my language, my outlet, and eventually, my inspiration to build this space.
+  </p>
+  <p class="modal-text">
+    I envisioned <strong>Sketchy Dedications</strong> as more than just a platform. It is a place where emotions—whether fleeting or deeply rooted—can take shape through creative expression. Each photo tells a story, each song sets a mood, and each dedication gives life to the unspoken feelings we all carry within us. I wanted to share this not only for myself but also for others who may feel the same need to express their inner thoughts and memories in a meaningful way.
+  </p>
+  <p class="modal-text">
+    In creating this site, I was guided and supported by the assistance of AI technology. With its help, I was able to transform my vision into something real and accessible for everyone. This collaboration between human emotion and artificial intelligence reflects the unique possibilities of our time—where creativity and technology come together to build spaces that connect people.
+  </p>
+  <p class="modal-text">
+    <strong>Sketchy Dedications</strong> is not just about me; it’s about us. It’s about anyone who wishes to leave a mark, dedicate a moment, or simply pour out what they feel without judgment. Every post here becomes part of a larger tapestry of human experience—a collection of random thoughts, deep confessions, joyful celebrations, and quiet reflections.
+  </p>
+  <p class="modal-text">
+    This is my gift to everyone: a safe, open, and creative space where emotions meet art, and where even the smallest dedication can carry the weight of a thousand feelings.
+  </p>
+  <p class="modal-text"><strong>Contact:</strong> gatacilothirdy@gmail.com</p>
+</template>
+
+<template id="tpl-features">
+  <h2>Features</h2>
+  <p class="modal-text">
+    At Sketchy Dedications, we want to make sure every emotion, memory, and story is expressed in the most meaningful way possible. That’s why we’ve built features that let you create and share your dedications with ease. You can upload a picture, pair it with a song that speaks to your heart, and write a description that captures your emotions. To keep things organized, posts can be tagged with themes such as #love, #friendship, or #memories, making it easier for others to discover content that resonates with them.
+  </p>
+  <p class="modal-text">
+    Interacting with others is just as important as expressing yourself, so Sketchy Dedications offers more than just a simple “like.” You can react with different emojis to truly reflect how a dedication makes you feel, and you can also leave comments to share your thoughts or encouragement. Posts can even be shared outside the site, allowing your dedications to reach a wider audience.
+  </p>
+  <p class="modal-text">
+    Creativity is at the heart of the platform. That’s why we provide options to embed music from YouTube or Spotify directly into your posts, use aesthetic filters for your photos, or even add meaningful quotes to highlight your message. For a more personal touch, each user has their own profile space, which serves as a collection of their dedications—a wall that reflects their emotions and creativity.
+  </p>
+  <p class="modal-text">
+    We also value safety, comfort, and flexibility. With privacy options, you can choose to post publicly, privately, or anonymously. A search and filter system makes it easy to revisit past dedications, and dark or light mode ensures the site looks beautiful at any time of the day. To build a stronger community, Sketchy Dedications features highlighted posts weekly, a “Random Dedication Shuffle” for those who want a surprise, and even a support wall where users can leave uplifting messages for others.
+  </p>
+  <p class="modal-text">
+    With notifications to keep you updated, and a built-in feedback system so you can share your thoughts or report issues, Sketchy Dedications is constantly growing and improving. Every feature is designed with one goal in mind: to help you express yourself and connect with others through the power of words, pictures, and music.
+  </p>
+</template>
+
+<footer>
+  <p>© 2025 Sketchy Dedications</p>
+  <button type="button" id="logoutBtn">Logout</button>
+</footer>
+
+<script src="js/dedications.js"></script>
+</body>
+</html>

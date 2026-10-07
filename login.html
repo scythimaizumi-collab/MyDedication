@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Log In - Sketchy Dedications</title>
+<link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  font-family:'Indie Flower', cursive;
+  background:#f0f0f0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.container {
+  background:#fff;
+  border:3px dashed #333;
+  border-radius:20px;
+  padding:40px;
+  width:400px;
+  text-align:center;
+  box-shadow:8px 8px 0 #999;
+}
+h1 { margin-bottom:25px;font-size:32px; }
+input {
+  width:90%;
+  padding:12px;
+  margin:10px 0;
+  border:2px solid #333;
+  border-radius:12px;
+  font-family:'Indie Flower', cursive;
+  font-size:16px;
+}
+button {
+  width:50%;
+  padding:12px 20px;
+  margin-top:20px;
+  border:none;
+  border-radius:12px;
+  background:#333;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover { background:#6e8efb; }
+a { text-decoration:none; color:#6e8efb; }
+a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Log In</h1>
+  <input type="text" id="username" placeholder="Username" required><br>
+  <input type="password" id="password" placeholder="Password" required><br>
+  <button onclick="login()">Log In</button>
+  <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+</div>
+
+<script>
+function login(){
+  let usernameInput = document.getElementById("username").value.trim();
+  let passwordInput = document.getElementById("password").value.trim();
+  
+  // Get users object from localStorage
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+  
+  // Check if the username exists
+  if(users[usernameInput]){
+    let user = users[usernameInput];
+    if(user.password === passwordInput){
+      // Save the current user in localStorage
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      alert("Login successful!");
+      window.location.href = "your-dedication.html";
+      return;
+    }
+  }
+  
+  alert("Invalid username or password!");
+}
+</script>
+</body>
+</html>

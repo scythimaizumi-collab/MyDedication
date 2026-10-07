@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Post - Sketchy Dedications</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">🎵 Sketchy Dedications</a>
+      <ul class="navbar-nav">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="feed.html" class="nav-link">Feed</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li id="navAuth"></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="container" style="max-width: 600px;">
+      <div class="card">
+        <div class="card-header">
+          <h2 style="margin: 0;">Edit Post</h2>
+        </div>
+        <div class="card-body">
+          <div id="editAlert"></div>
+
+          <form id="editPostForm">
+            <div class="form-group">
+              <label class="form-label">Photo</label>
+              <div id="currentImage" style="margin-bottom: 1rem;"></div>
+              <input type="file" class="form-control" id="editImage" accept="image/*">
+              <small class="text-muted">Leave empty to keep current image</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" id="editDescription" rows="5" required maxlength="500"></textarea>
+              <small class="text-muted"><span id="charCount">0</span>/500 characters</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tags</label>
+              <input type="text" class="form-control" id="editTags" placeholder="love, friendship, memories">
+            </div>
+
+            <div class="d-flex gap-2">
+              <a href="feed.html" class="btn btn-outline" style="flex: 1;">Cancel</a>
+              <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Sketchy Dedications</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    let postId = null;
+    let post = null;
+    let newImageData = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!SD.Auth.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Get post ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      postId = urlParams.get('id');
+
+      if (!postId) {
+        window.location.href = 'feed.html';
+        return;
+      }
+
+      post = SD.Posts.getById(postId);
+
+      if (!post) {
+        SD.Utils.toast('Post not found', 'error');
+        window.location.href = 'feed.html';
+        return;
+      }
+
+      // Check ownership
+      const user = SD.Auth.getCurrentUser();
+      if (post.userId !== user.id) {
+        SD.Utils.toast('You can only edit your own posts', 'error');
+        window.location.href = 'feed.html';
+        return;
+      }
+
+      // Populate form
+      document.getElementById('editDescription').value = post.description;
+      document.getElementById('editTags').value = post.tags.join(', ');
+      document.getElementById('charCount').textContent = post.description.length;
+
+      if (post.image) {
+        document.getElementById('currentImage').innerHTML = `
+          <img src="${post.image}" style="max-width: 100%; border-radius: var(--border-radius);">
+        `;
+      }
+
+      // Character counter
+      document.getElementById('editDescription').addEventListener('input', function() {
+        document.getElementById('charCount').textContent = this.value.length;
+      });
+
+      // Image change
+      document.getElementById('editImage').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            newImageData = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Form submission
+      document.getElementById('editPostForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const description = document.getElementById('editDescription').value.trim();
+        const tags = document.getElementById('editTags').value.split(',').map(t => t.trim()).filter(t => t);
+
+        const updates = {
+          description: description,
+          tags: tags
+        };
+
+        if (newImageData) {
+          updates.image = newImageData;
+        }
+
+        SD.Posts.update(postId, updates);
+        SD.Utils.toast('Post updated successfully!');
+
+        setTimeout(() => {
+          window.location.href = 'feed.html';
+        }, 500);
+      });
+    });
+  </script>
+</body>
+</html>

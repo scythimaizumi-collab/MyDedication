@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Share Your Dedication</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Share Your Dedication</h1>
+    <button onclick="window.location.href='home.html'" class="exit-btn">Exit</button>
+  </header>
+
+  <main class="auth-container">
+    <div class="auth-box">
+      <form id="createPostForm">
+        <input type="text" id="postDescription" placeholder="Write your dedication..." required>
+        <input type="url" id="postSong" placeholder="Song link (YouTube/Spotify)" required>
+        <input type="url" id="postImage" placeholder="Image link (optional)">
+        <button type="submit">Post</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="posts.js"></script>
+</body>
+</html>

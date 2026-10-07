@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Profile - Sketchy Dedications</title>
+<link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/dedications.css">
+<link rel="stylesheet" href="css/profile.css">
+</head>
+<body>
+
+<header>
+  <h1><a class="brand" href="your-dedication.html">Sketchy Dedications</a></h1>
+  <nav>
+    <a href="your-dedication.html">Feed</a>
+    <a href="saved-post.html">Saved Posts</a>
+    <button type="button" id="logoutBtn">Logout</button>
+  </nav>
+</header>
+
+<main class="container profile">
+
+  <!-- Header card -->
+  <section class="card hero">
+    <div>
+      <div class="avatar-wrap" id="avatarWrap" tabindex="0" role="button" aria-label="Change profile picture">
+        <img id="avatarImg" alt="Your profile picture">
+        <span class="avatar-hint">Click or drop to change</span>
+      </div>
+      <input type="file" id="avatarInput" accept="image/*" hidden>
+      <p class="center"><button type="button" class="link-btn" id="removeAvatar">Remove photo</button></p>
+    </div>
+
+    <div class="hero-info">
+      <div class="name-row">
+        <h2 id="displayName"></h2>
+        <input id="nameInput" maxlength="30" aria-label="Display name" hidden>
+        <button type="button" class="icon-btn" id="editName" aria-label="Edit display name">✎</button>
+      </div>
+      <p class="handle" id="handle"></p>
+
+      <div class="bio-row">
+        <p class="bio" id="bioText"></p>
+        <button type="button" class="icon-btn" id="editBio" aria-label="Edit bio">✎</button>
+      </div>
+      <form id="bioForm" hidden>
+        <textarea class="field" id="bioInput" maxlength="120" aria-label="Bio"></textarea>
+        <div class="row-between">
+          <span class="small muted" id="bioCount">0/120</span>
+          <span class="row">
+            <button type="button" class="btn" id="bioCancel">Cancel</button>
+            <button type="submit" class="btn primary">Save</button>
+          </span>
+        </div>
+      </form>
+      <p class="muted small" id="joined"></p>
+    </div>
+  </section>
+
+  <!-- Stats: click to jump to a tab -->
+  <section class="stats">
+    <button type="button" class="stat" data-goto="posts"><b data-stat="posts">0</b><span>Dedications</span></button>
+    <button type="button" class="stat" data-goto="activity"><b data-stat="likes">0</b><span>Likes received</span></button>
+    <button type="button" class="stat" data-goto="activity"><b data-stat="comments">0</b><span>Comments</span></button>
+    <button type="button" class="stat" data-goto="saved"><b data-stat="saved">0</b><span>Saved</span></button>
+  </section>
+
+  <!-- Tabs -->
+  <div class="tabs" role="tablist" aria-label="Profile sections">
+    <button type="button" role="tab" data-tab="posts" aria-selected="true">Dedications</button>
+    <button type="button" role="tab" data-tab="saved" aria-selected="false" tabindex="-1">Saved</button>
+    <button type="button" role="tab" data-tab="activity" aria-selected="false" tabindex="-1">Activity</button>
+    <button type="button" role="tab" data-tab="settings" aria-selected="false" tabindex="-1">Settings</button>
+  </div>
+
+  <!-- Dedications -->
+  <section class="panel" id="panel-posts">
+    <div class="toolbar">
+      <input class="field" type="search" id="postSearch" placeholder="Search my dedications..." aria-label="Search my dedications">
+      <select class="field" id="postSort" aria-label="Sort dedications">
+        <option value="new">Newest</option>
+        <option value="likes">Most liked</option>
+        <option value="comments">Most commented</option>
+        <option value="old">Oldest</option>
+      </select>
+    </div>
+    <div class="grid" id="postGrid"></div>
+  </section>
+
+  <!-- Saved -->
+  <section class="panel" id="panel-saved" hidden>
+    <div class="grid" id="savedGrid"></div>
+  </section>
+
+  <!-- Activity -->
+  <section class="panel" id="panel-activity" hidden>
+    <div class="chips" id="activityChips">
+      <button type="button" class="chip active" data-chip="all">All</button>
+      <button type="button" class="chip" data-chip="likes">Likes</button>
+      <button type="button" class="chip" data-chip="comments">Comments</button>
+    </div>
+    <ul class="activity" id="activityList"></ul>
+  </section>
+
+  <!-- Settings -->
+  <section class="panel" id="panel-settings" hidden>
+    <div class="card settings-group">
+      <h3>Username</h3>
+      <form id="usernameForm" class="stack" novalidate>
+        <input class="field" id="newUsername" placeholder="New username" maxlength="20" autocomplete="off" aria-label="New username">
+        <p class="hint" id="usernameHint">Letters, numbers and underscores, 3–20 characters.</p>
+        <div><button type="submit" class="btn">Change username</button></div>
+      </form>
+    </div>
+
+    <div class="card settings-group">
+      <h3>Password</h3>
+      <form id="passwordForm" class="stack" novalidate>
+        <div class="pw">
+          <input class="field" type="password" id="curPass" placeholder="Current password" autocomplete="current-password">
+          <button type="button" data-eye="curPass">Show</button>
+        </div>
+        <div class="pw">
+          <input class="field" type="password" id="newPass" placeholder="New password" autocomplete="new-password">
+          <button type="button" data-eye="newPass">Show</button>
+        </div>
+        <div class="meter" aria-hidden="true"><span id="meterBar"></span></div>
+        <p class="hint" id="meterText"></p>
+        <div class="pw">
+          <input class="field" type="password" id="confPass" placeholder="Confirm new password" autocomplete="new-password">
+          <button type="button" data-eye="confPass">Show</button>
+        </div>
+        <p class="hint" id="passHint"></p>
+        <div><button type="submit" class="btn">Update password</button></div>
+      </form>
+    </div>
+
+    <div class="card settings-group">
+      <h3>Preferences</h3>
+      <label class="switch"><input type="checkbox" id="prefConfirm"><span>Ask before deleting dedications</span></label>
+      <label class="switch"><input type="checkbox" id="prefMotion"><span>Reduce motion</span></label>
+    </div>
+
+    <div class="card settings-group">
+      <h3>Your data</h3>
+      <div class="row">
+        <button type="button" class="btn" id="exportBtn">Export as JSON</button>
+        <button type="button" class="btn danger-btn" id="clearBtn">Delete all my dedications</button>
+      </div>
+    </div>
+
+    <div class="card settings-group danger">
+      <h3>Delete account</h3>
+      <p class="muted small">This removes your account and all of your dedications. Type <b id="deleteName"></b> to confirm.</p>
+      <div class="row">
+        <input class="field" id="deleteConfirm" autocomplete="off" aria-label="Type your username to confirm" style="max-width:260px">
+        <button type="button" class="btn danger-btn" id="deleteBtn" disabled>Delete account</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Dedication detail -->
+<div class="overlay" id="postModal" aria-hidden="true">
+  <div class="modal wide" role="dialog" aria-modal="true" aria-label="Dedication">
+    <button type="button" class="close" data-close aria-label="Close">×</button>
+    <img class="post-img" id="detailImg" alt="">
+    <p class="post-desc" id="detailDesc"></p>
+    <textarea class="field" id="detailEdit" rows="4" maxlength="500" hidden aria-label="Edit description"></textarea>
+    <p class="muted small" id="detailMeta"></p>
+    <div class="row center" id="detailActions"></div>
+  </div>
+</div>
+
+<!-- Crop profile picture -->
+<div class="overlay" id="cropModal" aria-hidden="true">
+  <div class="modal wide" role="dialog" aria-modal="true" aria-label="Edit profile picture">
+    <button type="button" class="close" data-close aria-label="Close">×</button>
+    <h2>Edit profile picture</h2>
+    <div class="crop-box"><img id="cropImg" alt=""></div>
+    <label class="small">Zoom <input type="range" id="zoom" min="0.2" max="3" step="0.01" value="1"></label>
+    <div class="row center" style="margin-top:10px">
+      <button type="button" class="btn" data-rotate="-90" aria-label="Rotate left">⟲</button>
+      <button type="button" class="btn" data-rotate="90" aria-label="Rotate right">⟳</button>
+      <button type="button" class="btn" id="cropReset">Reset</button>
+    </div>
+    <div class="row center" style="margin-top:14px">
+      <button type="button" class="btn" data-close>Cancel</button>
+      <button type="button" class="btn primary" id="cropSave">Save picture</button>
+    </div>
+  </div>
+</div>
+
+<footer style="text-align:center;margin:30px 0">
+  <p>© 2025 Sketchy Dedications</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/profile.js"></script>
+</body>
+</html>

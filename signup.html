@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sign Up - Sketchy Dedications</title>
+<link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  font-family:'Indie Flower', cursive;
+  background:#f0f0f0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.container {
+  background:#fff;
+  border:3px dashed #333;
+  border-radius:20px;
+  padding:40px;
+  width:400px;
+  text-align:center;
+  box-shadow:8px 8px 0 #999;
+}
+h1 { margin-bottom:25px;font-size:32px; }
+input {
+  width:90%;
+  padding:12px;
+  margin:10px 0;
+  border:2px solid #333;
+  border-radius:12px;
+  font-family:'Indie Flower', cursive;
+  font-size:16px;
+}
+button {
+  width:50%;
+  padding:12px 20px;
+  margin-top:20px;
+  border:none;
+  border-radius:12px;
+  background:#333;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover { background:#6e8efb; }
+
+.terms-container {
+  border:2px dashed #333;
+  border-radius:12px;
+  padding:10px;
+  text-align:left;
+  margin:10px auto;
+  width:90%;
+  background:#f9f9f9;
+}
+.terms-container textarea {
+  width:100%;
+  border:none;
+  resize:none;
+  background:transparent;
+  font-family:'Indie Flower', cursive;
+  font-size:14px;
+}
+.terms-container label {
+  display:flex;
+  align-items:center;
+  margin-top:10px;
+  font-size:14px;
+  cursor:pointer;
+}
+.terms-container input[type="checkbox"] {
+  margin-right:8px;
+  transform:scale(1.2);
+}
+
+label, textarea { font-family:'Indie Flower', cursive; }
+a { text-decoration:none; color:#6e8efb; }
+a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Create Account</h1>
+  <input type="text" id="username" placeholder="Username" required><br>
+  <input type="password" id="password" placeholder="Password" required><br>
+
+  <div class="terms-container">
+    <label><input type="checkbox" id="agree"> I agree to the Terms and Conditions</label>
+    <textarea readonly rows="5">
+By signing up, you acknowledge that Sketchy Dedications is not responsible for inappropriate content. Please post genuine dedications only.
+    </textarea>
+  </div>
+
+  <button onclick="signUp()">Sign Up</button>
+  <p>Already have an account? <a href="login.html">Log In</a></p>
+</div>
+
+<script>
+function normalizeUsers(users){
+  if(Array.isArray(users)){
+    let obj = {};
+    users.forEach(u => obj[u.username] = u);
+    return obj;
+  }
+  return users || {};
+}
+
+function signUp(){
+  let username = document.getElementById("username").value.trim();
+  let password = document.getElementById("password").value.trim();
+  let agree = document.getElementById("agree").checked;
+  if(!username || !password) return alert("Please fill in all fields!");
+  if(!agree) return alert("You must agree to the terms!");
+
+  let users = normalizeUsers(JSON.parse(localStorage.getItem("users")));
+  if(users[username]) return alert("Username already exists!");
+
+  users[username] = {
+    username: username,
+    password: password,
+    profilePic: null,
+    usernameChangeCount:0,
+    lastPasswordChange:null
+  };
+
+  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("currentUser", JSON.stringify(users[username]));
+  alert("Account created successfully!");
+  window.location.href = "your-dedication.html";
+}
+</script>
+</body>
+</html>

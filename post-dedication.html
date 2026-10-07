@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Post Dedication - Sketchy Dedications</title>
+<link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  font-family:'Indie Flower', cursive;
+  background:#f0f0f0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.container {
+  background:#fff;
+  border:3px dashed #333;
+  border-radius:20px;
+  padding:40px;
+  width:500px;
+  text-align:center;
+  box-shadow:8px 8px 0 #999;
+}
+input, textarea {
+  width:90%;
+  padding:12px;
+  margin:10px 0;
+  border:2px solid #333;
+  border-radius:12px;
+  font-family:'Indie Flower', cursive;
+  font-size:16px;
+}
+button {
+  padding:10px 20px;
+  margin-top:15px;
+  border:none;
+  border-radius:12px;
+  background:#333;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover { background:#6e8efb; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>New Dedication</h1>
+  <input type="text" id="img" placeholder="Image URL"><br>
+  <input type="text" id="song" placeholder="Song URL"><br>
+  <textarea id="description" placeholder="Write your dedication..." rows="6"></textarea><br>
+  <button onclick="postDedication()">Post</button>
+  <button onclick="exitPage()">Exit</button>
+</div>
+
+<script>
+let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+if(!currentUser){
+  alert("Please log in first");
+  window.location.href = "login.html";
+}
+
+function postDedication(){
+  let img = document.getElementById("img").value.trim();
+  let song = document.getElementById("song").value.trim();
+  let description = document.getElementById("description").value.trim();
+
+  if(!description) return alert("Description is required!");
+
+  let posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+  posts.unshift({ // add new post to top
+    username: currentUser.username,
+    img: img || "https://via.placeholder.com/400x250.png?text=No+Image",
+    song: song || "",
+    description: description
+  });
+
+  localStorage.setItem("posts", JSON.stringify(posts));
+  alert("Dedication posted!");
+  window.location.href = "your-dedication.html";
+}
+
+function exitPage(){
+  window.location.href = "your-dedication.html";
+}
+</script>
+
+</body>
+</html>

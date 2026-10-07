@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Sketchy Dedications</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">🎵 Sketchy Dedications</a>
+      <ul class="navbar-nav">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="feed.html" class="nav-link">Feed</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li id="navAuth"></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="container" style="max-width: 600px;">
+      <h2 class="mb-4">Settings</h2>
+
+      <!-- Account Settings -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3 style="margin: 0;">Account</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" id="settingsUsername" readonly>
+            <small class="text-muted">Username cannot be changed</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Change Password</label>
+            <input type="password" class="form-control mb-2" id="oldPassword" placeholder="Current password">
+            <input type="password" class="form-control mb-2" id="newPassword" placeholder="New password (min 6 chars)">
+            <input type="password" class="form-control" id="confirmNewPassword" placeholder="Confirm new password">
+            <button class="btn btn-primary btn-sm mt-2" onclick="changePassword()">Update Password</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appearance Settings -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3 style="margin: 0;">Appearance</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Theme</label>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline" id="lightThemeBtn" onclick="SD.Theme.setTheme('light')">☀️ Light</button>
+              <button class="btn btn-outline" id="darkThemeBtn" onclick="SD.Theme.setTheme('dark')">🌙 Dark</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Management -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3 style="margin: 0;">Data Management</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Export Data</label>
+            <p class="text-muted">Download all your posts and data</p>
+            <button class="btn btn-outline btn-sm" onclick="exportData()">📥 Export My Data</button>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Clear Data</label>
+            <p class="text-muted">Delete all your posts (this cannot be undone)</p>
+            <button class="btn btn-danger btn-sm" onclick="clearMyPosts()">🗑️ Clear My Posts</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="card" style="border: 2px solid var(--danger-color);">
+        <div class="card-header" style="background: rgba(255,107,107,0.1);">
+          <h3 style="margin: 0; color: var(--danger-color);">Danger Zone</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group" style="margin: 0;">
+            <label class="form-label" style="color: var(--danger-color);">Delete Account</label>
+            <p class="text-muted">Permanently delete your account and all data</p>
+            <button class="btn btn-danger" onclick="deleteAccount()">⚠️ Delete My Account</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Sketchy Dedications</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!SD.Auth.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const user = SD.Auth.getCurrentUser();
+      document.getElementById('settingsUsername').value = user.username;
+
+      // Set active theme button
+      updateThemeButtons();
+    });
+
+    function updateThemeButtons() {
+      const theme = SD.Storage.getTheme();
+      document.getElementById('lightThemeBtn').classList.toggle('btn-primary', theme === 'light');
+      document.getElementById('lightThemeBtn').classList.toggle('btn-outline', theme !== 'light');
+      document.getElementById('darkThemeBtn').classList.toggle('btn-primary', theme === 'dark');
+      document.getElementById('darkThemeBtn').classList.toggle('btn-outline', theme !== 'dark');
+    }
+
+    function changePassword() {
+      const oldPass = document.getElementById('oldPassword').value;
+      const newPass = document.getElementById('newPassword').value;
+      const confirmPass = document.getElementById('confirmNewPassword').value;
+
+      if (SD.Auth.changePassword(oldPass, newPass, confirmPass)) {
+        document.getElementById('oldPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmNewPassword').value = '';
+      }
+    }
+
+    function exportData() {
+      const user = SD.Auth.getCurrentUser();
+      const posts = SD.Posts.getByUser(user.username);
+      const data = {
+        user: user,
+        posts: posts,
+        exportedAt: new Date().toISOString()
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `sketchy-dedications-export-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      SD.Utils.toast('Data exported successfully!');
+    }
+
+    function clearMyPosts() {
+      if (!confirm('Are you sure? This will delete all your posts.')) return;
+
+      const user = SD.Auth.getCurrentUser();
+      const posts = SD.Posts.getAll().filter(p => p.userId !== user.id);
+      SD.Storage.savePosts(posts);
+      SD.Utils.toast('All your posts have been deleted');
+    }
+
+    function deleteAccount() {
+      if (!confirm('⚠️ WARNING: This will permanently delete your account and all data. This cannot be undone!')) return;
+      if (!confirm('Are you absolutely sure?')) return;
+
+      const user = SD.Auth.getCurrentUser();
+      const users = SD.Storage.getUsers();
+      delete users[user.username.toLowerCase()];
+      SD.Storage.saveUsers(users);
+
+      const posts = SD.Posts.getAll().filter(p => p.userId !== user.id);
+      SD.Storage.savePosts(posts);
+
+      SD.Auth.logout();
+    }
+  </script>
+</body>
+</html>
